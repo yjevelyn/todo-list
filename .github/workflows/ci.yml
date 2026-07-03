@@ -1,0 +1,50 @@
+name: CI - Run Tests
+
+# Trigger: runs on every pull request targeting main
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run Todo Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1 - Get the code onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2 - Make sure Node.js is available
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3 - Run the tests
+      - name: Run tests
+        run: node app.test.js
+
+      # Step 4 - Check HTML file exists
+      - name: Check index.html exists
+        run: |
+          if [ -f "index.html" ]; then
+            echo "index.html found"
+          else
+            echo "index.html missing!"
+            exit 1
+          fi
+
+      # Step 5 - Check all required files exist
+      - name: Check all files present
+        run: |
+          echo "Checking required files..."
+          for file in index.html style.css app.js; do
+            if [ -f "$file" ]; then
+              echo "  $file - OK"
+            else
+              echo "  $file - MISSING"
+              exit 1
+            fi
+          done
+          echo "All files present!"

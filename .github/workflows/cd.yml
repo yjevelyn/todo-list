@@ -1,0 +1,45 @@
+name: CD - Deploy to GitHub Pages
+
+# Trigger: runs when code is merged/pushed to main
+on:
+  push:
+    branches: [main]
+
+# Required permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only allow one deployment at a time
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Step 1 - Get the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2 - Setup GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # Step 3 - Upload the files to GitHub Pages
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      # Step 4 - Deploy!
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
