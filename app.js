@@ -51,12 +51,14 @@ function render() {
   });
 }
 
-// Allow pressing Enter to add a task
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("taskInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") addTask();
+// Allow pressing Enter to add a task (only in browser, not in Node.js tests)
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("taskInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addTask();
+    });
   });
-});
+}
 
 // Export functions for testing
 if (typeof module !== "undefined") {
