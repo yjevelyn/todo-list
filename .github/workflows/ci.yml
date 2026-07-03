@@ -4,7 +4,7 @@ name: CI - Run Tests
 on:
   pull_request:
     branches: [main]
-
+  workflow_dispatch:
 jobs:
   test:
     name: Run Todo Tests
